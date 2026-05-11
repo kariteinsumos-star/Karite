@@ -13,6 +13,7 @@ import { Recetas } from './pages/Recetas';
 import { StockCritico } from './pages/StockCritico';
 import { Usuarios } from './pages/Usuarios';
 import { Ventas } from './pages/Ventas';
+import { Reportes } from './pages/Reportes';
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="/kardex" element={<Kardex />} />
             <Route path="/stock-critico" element={<StockCritico />} />
             <Route path="/usuarios" element={<Usuarios />} />
+            <Route path="/reportes" element={<Reportes />} />
           </Route>
         </Routes>
       </BrowserRouter>
