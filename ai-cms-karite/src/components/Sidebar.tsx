@@ -13,6 +13,8 @@ const navItems = [
   { to: '/stock-critico', label: 'Stock crítico' },
   { to: '/reportes', label: 'Reportes' },
   { to: '/usuarios', label: 'Usuarios' },
+  { to: '/auditoria', label: 'Auditoría' },
+  { to: '/alertas-costos', label: 'Alertas de Costos' },
 ];
 
 export function Sidebar() {

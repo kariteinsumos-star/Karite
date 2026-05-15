@@ -5,6 +5,7 @@ import { Loading } from '../components/Loading';
 import { useAuth } from '../context/AuthContext';
 import { formatNumber, getErrorMessage } from '../lib/formatters';
 import { supabase } from '../lib/supabaseClient';
+import { FieldHint } from '../components/FieldHint';
 import type { ProductoBase, ValidacionStock } from '../lib/types';
 
 export function Produccion() {
@@ -71,7 +72,9 @@ export function Produccion() {
       {success && <AlertBox type="success">{success}</AlertBox>}
       <div className="panel">
         <form className="form-grid" onSubmit={validar}>
-          <label>Producto<select value={productoId} onChange={(e) => { setProductoId(e.target.value); setValidacion([]); }} required><option value="">Seleccionar producto</option>{productos.map((p) => <option key={p.id_producto} value={p.id_producto}>{p.nombre}</option>)}</select></label>
+          <label>Producto<select value={productoId} onChange={(e) => { setProductoId(e.target.value); setValidacion([]); }} required><option value="">Seleccionar producto</option>{productos.map((p) => <option key={p.id_producto} value={p.id_producto}>{p.nombre}</option>)}</select><FieldHint>
+  Selecciona el producto que deseas fabricar. El sistema validará automáticamente si existen insumos suficientes.
+</FieldHint></label>
           <label>Cantidad a producir<input type="number" min="1" step="1" value={cantidad} onChange={(e) => setCantidad(e.target.value)} required /></label>
           <button className="btn primary">Validar stock</button>
           <button type="button" className="btn success" disabled={!canOperate || !allOk || submitting} onClick={() => void producir()}>{submitting ? 'Registrando...' : 'Registrar producción'}</button>

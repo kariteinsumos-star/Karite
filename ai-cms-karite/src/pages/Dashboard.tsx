@@ -5,6 +5,7 @@ import { Loading } from '../components/Loading';
 import { StatCard } from '../components/StatCard';
 import { formatCLP, formatDate, formatNumber, formatPercent, getErrorMessage } from '../lib/formatters';
 import { supabase } from '../lib/supabaseClient';
+import { ActionRecommendations } from '../components/ActionRecommendations';
 import type { Insumo, KardexMovimiento, ProductoCosteo } from '../lib/types';
 
 interface VentasResumen {
@@ -135,6 +136,8 @@ export function Dashboard() {
       </div>
 
       {error && <AlertBox type="error">{error}</AlertBox>}
+      
+      <ActionRecommendations />
 
       <h3>Inventario</h3>
 

@@ -4,6 +4,7 @@ import { Loading } from '../components/Loading';
 import { useAuth } from '../context/AuthContext';
 import { getErrorMessage } from '../lib/formatters';
 import { supabase } from '../lib/supabaseClient';
+import { FieldHint } from '../components/FieldHint';
 import type { Insumo, ProductoBase } from '../lib/types';
 
 export function Ventas() {
@@ -79,7 +80,9 @@ export function Ventas() {
         <div className="panel">
           <h3>Venta directa de producto</h3>
           <form className="form-grid" onSubmit={venderProducto}>
-            <label>Producto<select value={productoId} onChange={(e) => setProductoId(e.target.value)} required><option value="">Seleccionar producto</option>{productos.map((p) => <option key={p.id_producto} value={p.id_producto}>{p.nombre}</option>)}</select></label>
+            <label>Producto<select value={productoId} onChange={(e) => setProductoId(e.target.value)} required><option value="">Seleccionar producto</option>{productos.map((p) => <option key={p.id_producto} value={p.id_producto}>{p.nombre}</option>)}</select></label><FieldHint>
+  Solo deberían venderse productos con stock terminado disponible.
+</FieldHint>
             <label>Cantidad<input type="number" min="1" step="1" value={cantidadProducto} onChange={(e) => setCantidadProducto(e.target.value)} required /></label>
             <label>Referencia Fontana<input value={refProducto} onChange={(e) => setRefProducto(e.target.value)} placeholder="Boleta/Factura opcional" /></label>
             <button className="btn primary" disabled={!canSell}>Registrar venta</button>

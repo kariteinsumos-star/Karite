@@ -14,6 +14,8 @@ import { StockCritico } from './pages/StockCritico';
 import { Usuarios } from './pages/Usuarios';
 import { Ventas } from './pages/Ventas';
 import { Reportes } from './pages/Reportes';
+import { AuditoriaMovimientos } from './pages/AuditoriaMovimientos';
+import AlertasCostos from "./pages/AlertasCostos";
 
 export default function App() {
   return (
@@ -34,6 +36,8 @@ export default function App() {
             <Route path="/stock-critico" element={<StockCritico />} />
             <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/reportes" element={<Reportes />} />
+            <Route path="/auditoria" element={<AuditoriaMovimientos />} />
+            <Route path="/alertas-costos" element={<AlertasCostos />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -5,6 +5,7 @@ import { Loading } from '../components/Loading';
 import { useAuth } from '../context/AuthContext';
 import { formatCLP, formatNumber, getErrorMessage } from '../lib/formatters';
 import { supabase } from '../lib/supabaseClient';
+import { FieldHint } from '../components/FieldHint';
 import type { Insumo, ProductoBase, RecetaDetalle } from '../lib/types';
 
 export function Recetas() {
@@ -186,19 +187,24 @@ export function Recetas() {
       <div className="panel">
         <form className="form-grid" onSubmit={save}>
           <label>
-            Producto
-            <select
-              value={productoId}
-              onChange={(e) => setProductoId(e.target.value)}
-              required
-            >
-              <option value="">Seleccionar producto</option>
-              {productos.map((p) => (
-                <option key={p.id_producto} value={p.id_producto}>
-                  {p.nombre}
-                </option>
-              ))}
-            </select>
+  Producto
+  <select
+    value={productoId}
+    onChange={(e) => setProductoId(e.target.value)}
+    required
+  >
+    <option value="">Seleccionar producto</option>
+    {productos.map((p) => (
+      <option key={p.id_producto} value={p.id_producto}>
+        {p.nombre}
+      </option>
+    ))}
+  </select>
+
+  <FieldHint>
+    Selecciona el producto simple al que le configurarás su receta de fabricación.
+  </FieldHint>
+  
           </label>
 
           <label>
