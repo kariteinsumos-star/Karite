@@ -169,10 +169,17 @@ export default function BodegaInsumos() {
           </div>
 
           <div className="bodega-actions">
-            <button className="bodega-button" onClick={cargarDatos}>
-              Actualizar datos
-            </button>
-          </div>
+  <button
+    className="bodega-button"
+    onClick={() => alert("Formulario de compra pendiente de implementar")}
+  >
+    Registrar compra
+  </button>
+
+  <button className="bodega-button" onClick={cargarDatos}>
+    Actualizar datos
+  </button>
+</div>
         </div>
 
         <div className="bodega-table-wrapper">
