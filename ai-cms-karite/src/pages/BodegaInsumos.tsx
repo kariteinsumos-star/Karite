@@ -45,6 +45,7 @@ export default function BodegaInsumos() {
   const [busqueda, setBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("Todos");
   const [errorMensaje, setErrorMensaje] = useState("");
+  const [mostrarModalCompra, setMostrarModalCompra] = useState(false);
 
   useEffect(() => {
     cargarDatos();
@@ -171,7 +172,7 @@ export default function BodegaInsumos() {
           <div className="bodega-actions">
   <button
     className="bodega-button"
-    onClick={() => alert("Formulario de compra pendiente de implementar")}
+    onClick={() => setMostrarModalCompra(true)}
   >
     Registrar compra
   </button>
@@ -299,6 +300,42 @@ export default function BodegaInsumos() {
           </p>
         )}
       </section>
+
+      {mostrarModalCompra && (
+        <div className="bodega-modal-backdrop">
+          <div className="bodega-modal">
+            <div className="bodega-modal-header">
+              <div>
+                <h2>Registrar compra de insumo</h2>
+                <p>Modal activo. El formulario se agregará por partes.</p>
+              </div>
+
+              <button
+                className="bodega-modal-close"
+                onClick={() => setMostrarModalCompra(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="bodega-modal-actions">
+              <button
+                className="bodega-button-secondary"
+                onClick={() => setMostrarModalCompra(false)}
+              >
+                Cancelar
+              </button>
+
+              <button
+                className="bodega-button"
+                onClick={() => alert("Modal funcionando correctamente")}
+              >
+                Probar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
