@@ -1,24 +1,29 @@
-import { FormEvent, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { AlertBox } from '../components/AlertBox';
-import { useAuth } from '../context/AuthContext';
-import { getErrorMessage } from '../lib/formatters';
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { getErrorMessage } from "../lib/formatters";
 
 export function Login() {
   const { session, signIn } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  const [email, setEmail] = useState("karite.insumos@gmail.com");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (session) return <Navigate to="/" replace />;
+  if (session) {
+    return <Navigate to="/" replace />;
+  }
 
-  const onSubmit = async (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setError(null);
     setLoading(true);
+
     try {
-      await signIn(email, password);
+      await signIn(email.trim(), password);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -29,16 +34,57 @@ export function Login() {
   return (
     <div className="login-page">
       <form className="login-card" onSubmit={onSubmit}>
-        <div className="brand-logo large">K</div>
+        <div className="login-logo large">K</div>
+
         <h1>AI-CMS Karité</h1>
+
         <p>Acceso al sistema de costos, inventario y producción.</p>
-        {error && <AlertBox type="error">{error}</AlertBox>}
-        <label>Email</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="karite.proyecto@gmail.com" />
-        <label>Contraseña</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button className="btn primary full" disabled={loading}>{loading ? 'Ingresando...' : 'Ingresar'}</button>
+
+        {error && (
+          <div
+            style={{
+              background: "#fee2e2",
+              color: "#991b1b",
+              border: "1px solid #fecaca",
+              borderRadius: "12px",
+              padding: "10px 12px",
+              marginBottom: "14px",
+              fontSize: "14px",
+              fontWeight: 700,
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <label>
+          Email
+          <input
+            type="email"
+            value={email}
+            autoComplete="email"
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="karite.insumos@gmail.com"
+          />
+        </label>
+
+        <label>
+          Contraseña
+          <input
+            type="password"
+            value={password}
+            autoComplete="current-password"
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Ingresa tu contraseña"
+          />
+        </label>
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Ingresando..." : "Ingresar"}
+        </button>
       </form>
     </div>
   );
 }
+
+export default Login;

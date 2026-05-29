@@ -16,7 +16,10 @@ import { Ventas } from './pages/Ventas';
 import { Reportes } from './pages/Reportes';
 import { AuditoriaMovimientos } from './pages/AuditoriaMovimientos';
 import AlertasCostos from "./pages/AlertasCostos";
-
+import ComponentesCosto from "./pages/ComponentesCosto";
+import HistorialComprasInsumo from "./pages/HistorialComprasInsumo";
+import LotesDeFraccionamiento from "./pages/LotesFraccionamiento";
+import BodegaInsumos from "./pages/BodegaInsumos";
 export default function App() {
   return (
     <AuthProvider>
@@ -38,6 +41,10 @@ export default function App() {
             <Route path="/reportes" element={<Reportes />} />
             <Route path="/auditoria" element={<AuditoriaMovimientos />} />
             <Route path="/alertas-costos" element={<AlertasCostos />} />
+            <Route path="/componentes-costo" element={<ComponentesCosto />} />
+            <Route path="/historial-compras-insumo" element={<HistorialComprasInsumo />} />
+            <Route path="/lotes-fraccionamiento" element={<LotesDeFraccionamiento />} />
+            <Route path="/bodega-insumos" element={<BodegaInsumos />} />
           </Route>
         </Routes>
       </BrowserRouter>

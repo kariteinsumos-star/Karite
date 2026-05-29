@@ -1,105 +1,176 @@
-import type * as React from 'react';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import type { Session, User } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabaseClient';
-import type { AppRole, Profile } from '../lib/types';
+import { createContext, useContext, useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import type { Session, User } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabaseClient";
 
-interface AuthContextValue {
+type AppRole = "admin" | "operador" | "vendedor" | "solo_lectura";
+
+type AuthContextType = {
   session: Session | null;
   user: User | null;
-  profile: Profile | null;
   loading: boolean;
-  role: AppRole | null;
+
+  isAuthenticated: boolean;
   isAdmin: boolean;
+
+  role: AppRole;
+  displayName: string;
+
   canOperate: boolean;
   canSell: boolean;
+  canRead: boolean;
+  canManageUsers: boolean;
+
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
+
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+};
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+function getRoleByEmail(email?: string | null): AppRole {
+  if (email === "karite.insumos@gmail.com") {
+    return "admin";
+  }
+
+  return "solo_lectura";
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+function getDisplayName(email?: string | null): string {
+  if (!email) return "Usuario";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+  if (email === "karite.insumos@gmail.com") {
+    return "Administrador Karité";
+  }
+
+  return email;
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id,email,display_name,rol,activo')
-      .eq('id', userId)
-      .maybeSingle();
-
-    if (error) throw error;
-    setProfile((data as Profile | null) ?? null);
-  };
-
-  const refreshProfile = async () => {
-    if (session?.user.id) await loadProfile(session.user.id);
-  };
-
   useEffect(() => {
-    let isMounted = true;
+    let mounted = true;
 
-    const init = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        if (!isMounted) return;
-        setSession(data.session);
-        if (data.session?.user.id) await loadProfile(data.session.user.id);
-      } finally {
-        if (isMounted) setLoading(false);
+    async function loadSession() {
+      const { data, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("Error obteniendo sesión:", error);
       }
-    };
 
-    void init();
+      if (!mounted) return;
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession);
-      if (nextSession?.user.id) {
-        void loadProfile(nextSession.user.id);
-      } else {
-        setProfile(null);
-      }
+      setSession(data.session ?? null);
+      setUser(data.session?.user ?? null);
+      setLoading(false);
+    }
+
+    loadSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
+      setLoading(false);
     });
 
     return () => {
-      isMounted = false;
-      listener.subscription.unsubscribe();
+      mounted = false;
+      subscription.unsubscribe();
     };
   }, []);
 
-  const value = useMemo<AuthContextValue>(() => {
-    const role = profile?.activo ? profile.rol : null;
-    return {
-      session,
-      user: session?.user ?? null,
-      profile,
-      loading,
-      role,
-      isAdmin: role === 'admin',
-      canOperate: role === 'admin' || role === 'operador',
-      canSell: role === 'admin' || role === 'operador' || role === 'vendedor',
-      signIn: async (email: string, password: string) => {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-      },
-      signOut: async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) throw error;
-      },
-      refreshProfile
-    };
-  }, [loading, profile, session]);
+  async function signIn(email: string, password: string) {
+    setLoading(true);
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setLoading(false);
+      throw error;
+    }
+
+    setSession(data.session ?? null);
+    setUser(data.user ?? null);
+    setLoading(false);
+  }
+
+  async function signOut() {
+    setLoading(true);
+
+    await supabase.auth.signOut();
+
+    setSession(null);
+    setUser(null);
+    setLoading(false);
+  }
+
+  const role = getRoleByEmail(user?.email);
+  const displayName = getDisplayName(user?.email);
+
+  const isAdmin = role === "admin";
+
+  const canOperate =
+    role === "admin" ||
+    role === "operador";
+
+  const canSell =
+    role === "admin" ||
+    role === "vendedor";
+
+  const canRead =
+    role === "admin" ||
+    role === "operador" ||
+    role === "vendedor" ||
+    role === "solo_lectura";
+
+  const canManageUsers = role === "admin";
+
+  return (
+    <AuthContext.Provider
+      value={{
+        session,
+        user,
+        loading,
+
+        isAuthenticated: Boolean(session),
+        isAdmin,
+
+        role,
+        displayName,
+
+        canOperate,
+        canSell,
+        canRead,
+        canManageUsers,
+
+        signIn,
+        signOut,
+
+        login: signIn,
+        logout: signOut,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth debe usarse dentro de AuthProvider');
-  return ctx;
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuth debe usarse dentro de AuthProvider");
+  }
+
+  return context;
 }

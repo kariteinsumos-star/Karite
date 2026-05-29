@@ -1,3 +1,4 @@
+import OnboardingKarite from "./OnboardingKarite";
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Header } from './Header';
@@ -11,14 +12,14 @@ export function ProtectedLayout() {
   if (!session) return <Navigate to="/login" replace />;
 
   return (
-    <div className="app-shell">
-      <Sidebar />
-      <main>
-        <Header />
-        <section className="content">
-          <Outlet />
-        </section>
-      </main>
-    </div>
-  );
+  <div className="app-shell">
+    <Sidebar />
+    <main className="content">
+      <Header />
+      <Outlet />
+    </main>
+
+    <OnboardingKarite />
+  </div>
+);
 }
