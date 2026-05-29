@@ -46,6 +46,12 @@ export default function BodegaInsumos() {
   const [filtroEstado, setFiltroEstado] = useState("Todos");
   const [errorMensaje, setErrorMensaje] = useState("");
   const [mostrarModalCompra, setMostrarModalCompra] = useState(false);
+  const [formCompra, setFormCompra] = useState({
+  proveedor: "",
+  insumo: "",
+  cantidad: "",
+  precio_unitario: "",
+});
 
   useEffect(() => {
     cargarDatos();
@@ -318,6 +324,54 @@ export default function BodegaInsumos() {
               </button>
             </div>
 
+            <div className="bodega-form-grid">
+  <label>
+    Proveedor
+    <input
+      value={formCompra.proveedor}
+      onChange={(e) =>
+        setFormCompra({ ...formCompra, proveedor: e.target.value })
+      }
+      placeholder="Ej: Proveedor Karité"
+    />
+  </label>
+
+  <label>
+    Insumo
+    <input
+      value={formCompra.insumo}
+      onChange={(e) =>
+        setFormCompra({ ...formCompra, insumo: e.target.value })
+      }
+      placeholder="Ej: Aceite de almendra"
+    />
+  </label>
+
+  <label>
+    Cantidad
+    <input
+      type="number"
+      value={formCompra.cantidad}
+      onChange={(e) =>
+        setFormCompra({ ...formCompra, cantidad: e.target.value })
+      }
+      placeholder="Ej: 25"
+    />
+  </label>
+
+  <label>
+    Precio unitario
+    <input
+      type="number"
+      value={formCompra.precio_unitario}
+      onChange={(e) =>
+        setFormCompra({ ...formCompra, precio_unitario: e.target.value })
+      }
+      placeholder="Ej: 8500"
+    />
+  </label>
+</div>
+
             <div className="bodega-modal-actions">
               <button
                 className="bodega-button-secondary"
@@ -328,10 +382,13 @@ export default function BodegaInsumos() {
 
               <button
                 className="bodega-button"
-                onClick={() => alert("Modal funcionando correctamente")}
-              >
-                Probar
-              </button>
+                onClick={() => {
+    console.log("Formulario compra:", formCompra);
+    alert("Campos visuales capturados correctamente.");
+  }}
+>
+  Probar formulario
+</button>
             </div>
           </div>
         </div>
